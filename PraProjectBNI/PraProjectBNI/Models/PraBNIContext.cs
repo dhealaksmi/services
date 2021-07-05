@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace PraProjectBNI.Models
 {
-    public partial class PraBNIContext : DbContext
+    public partial class PraBNIContext : IdentityDbContext
     {
         public PraBNIContext()
         {
@@ -34,6 +35,8 @@ namespace PraProjectBNI.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
             modelBuilder.Entity<Course>(entity =>
@@ -44,7 +47,7 @@ namespace PraProjectBNI.Models
 
                 entity.Property(e => e.IdCourse).HasColumnName("ID_Course");
 
-                entity.Property(e => e.JumlahMahasiswa).HasColumnName("Jumlah_Mahasiswa");
+               // entity.Property(e => e.JumlahMahasiswa).HasColumnName("Jumlah_Mahasiswa");
 
                 entity.Property(e => e.NamaCourse)
                     .IsRequired()

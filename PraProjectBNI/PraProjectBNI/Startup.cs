@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using PraProjectBNI.Data;
 using PraProjectBNI.Models;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,8 @@ namespace PraProjectBNI
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PraProjectBNI", Version = "v1" });
@@ -39,7 +41,20 @@ namespace PraProjectBNI
             //mendaftarkan dbcontext
             services.AddDbContext<PraBNIContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //Tambahkan pengaturan identity
+            services.AddIdentity<IdentityUser, IdentityRole>(options => {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireDigit = true;
+            }).AddDefaultTokenProviders().AddEntityFrameworkStores<PraBNIContext>();
+
+
+            services.AddScoped<IEnrollment, EnrollmentData>();
+            services.AddScoped<ICourse, CourseData>();
         }
+
        
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,6 +70,9 @@ namespace PraProjectBNI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            //menggunakan autentikasi
+            app.UseAuthentication();
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
