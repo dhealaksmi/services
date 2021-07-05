@@ -30,15 +30,25 @@ namespace PraProjectBNI.Controllers
 
         // GET api/<EnrollmentsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<Enrollment> Get(int id)
         {
-            return "value";
+            var result = await _enrollment.GetById(id.ToString());
+            return result;
         }
 
         // POST api/<EnrollmentsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] Enrollment enrollment)
         {
+            try
+            {
+                await _enrollment.Insert(enrollment);
+                return Ok($"Enrollment {enrollment.IdEnroll} berhasil ditambahkan");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<EnrollmentsController>/5
@@ -49,8 +59,17 @@ namespace PraProjectBNI.Controllers
 
         // DELETE api/<EnrollmentsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            try
+            {
+                await _enrollment.Delete(id.ToString());
+                return Ok($"Enrolment {id} berhasil didelete");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -15,9 +15,26 @@ namespace PraProjectBNI.Data
         {
             _db = db;
         }
-        public Task Delete(string id)
+        public async Task Delete(string id)
         {
-            throw new NotImplementedException();
+            var result = await GetById(id);
+            //cek apakah data ada?
+            if (result != null)
+            {
+                try
+                {
+                    _db.Enrollments.Remove(result);
+                    await _db.SaveChangesAsync();
+                }
+                catch (DbUpdateException dbEx)
+                {
+                    throw new Exception($"DbError: {dbEx.Message}");
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"Error: {ex.Message}");
+                }
+            }
         }
 
         public async Task<IEnumerable<Enrollment>> GetAll()
@@ -27,14 +44,29 @@ namespace PraProjectBNI.Data
             return results;
         }
 
-        public Task<Enrollment> GetById(string id)
+        public async Task<Enrollment> GetById(string id)
         {
-            throw new NotImplementedException();
+            var result = await (from e in _db.Enrollments
+                                where e.IdEnroll == Convert.ToInt32(id)
+                                select e).FirstOrDefaultAsync();
+            return result;
         }
 
-        public Task Insert(Enrollment obj)
+        public async Task Insert(Enrollment obj)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _db.Enrollments.Add(obj);
+                await _db.SaveChangesAsync();
+            }
+            catch (DbUpdateException dbEx)
+            {
+                throw new Exception($"Db Error: {dbEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error: {ex.Message}");
+            }
         }
 
         public Task Update(string id, Enrollment obj)
