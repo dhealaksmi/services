@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -7,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace PraProjectBNI.Models
 {
-    public partial class PraBNIContext : IdentityDbContext
+    public partial class PraBNIContext : DbContext
     {
         public PraBNIContext()
         {
