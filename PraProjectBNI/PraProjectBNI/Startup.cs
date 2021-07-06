@@ -53,6 +53,7 @@ namespace PraProjectBNI
 
             services.AddScoped<IEnrollment, EnrollmentData>();
             services.AddScoped<ICourse, CourseData>();
+            services.AddScoped<IDosenCourse, DosenCourseData>();
         }
 
        
