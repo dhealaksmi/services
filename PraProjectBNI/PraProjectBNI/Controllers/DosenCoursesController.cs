@@ -64,7 +64,7 @@ namespace PraProjectBNI.Controllers
             try
             {
                 await _dosencourse.Delete(id.ToString());
-                return Ok($"DOsenCourse {id} berhasil didelete");
+                return Ok($"DosenCourse {id} berhasil didelete");
             }
             catch (Exception ex)
             {
