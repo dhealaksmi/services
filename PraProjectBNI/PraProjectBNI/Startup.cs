@@ -42,9 +42,11 @@ namespace PraProjectBNI
             services.AddDbContext<PraBNIContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddScoped<IStudent, StudentData>();
             services.AddScoped<IEnrollment, EnrollmentData>();
             services.AddScoped<ICourse, CourseData>();
             services.AddScoped<IDosenCourse, DosenCourseData>();
+            services.AddScoped<IDosen, DosenData>();
         }
 
        
