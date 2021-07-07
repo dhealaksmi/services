@@ -1,19 +1,20 @@
-﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using PraProjectBNI.Models;
-using SampleAPI.Data;
+using PraProjectBNI.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static PraProjectBNI.Data.IStudent;
 
 namespace PraProjectBNI.Data
 {
-    public class StudentDataSQL : IStudent
+    public class StudentDataSQLData : IStudent
     {
 
         private IConfiguration _config;
-        public StudentDataSQL(IConfiguration config)
+        public StudentDataSQLData (IConfiguration config)
         {
             _config = config;
         }
@@ -57,7 +58,7 @@ namespace PraProjectBNI.Data
             }
         }
 
-        public IEnumerable<Student> GetAll()
+        public async Task <IEnumerable<Student>> GetAll()
         {
             List<Student> lstStudents = new List<Student>();
             using (SqlConnection conn = new SqlConnection(GetConnStr()))
@@ -124,40 +125,7 @@ namespace PraProjectBNI.Data
             return student;
         }
 
-        public IEnumerable<Student> GetByName(string studentName)
-        {
-            List<Student> lstStudents = new List<Student>();
-            using (SqlConnection conn = new SqlConnection(GetConnStr()))
-            {
-                string strSql = @"select * from Student where Nama like @Nama
-                                  order by Nama asc";
-                SqlCommand cmd = new SqlCommand(strSql, conn);
-                cmd.Parameters.AddWithValue("@Nama", "%" + studentName + "%");
-                conn.Open();
-                SqlDataReader dr = cmd.ExecuteReader();
-                if (dr.HasRows)
-                {
-                    while (dr.Read())
-                    {
-                        lstStudents.Add(new Student
-                        {
-                            ID_Student = Convert.ToInt32(dr["ID"]),
-                            Nama = dr["Nama"].ToString(),
-                            Domisili = dr["Domisili"].ToString(),
-                            Angkatan = Convert.ToInt32(dr["Angkatan"]),
-                            Jenis_Kelamin = dr["Jenis Kelamin"].ToString()
-                        });
-                    }
-                }
-                dr.Close();
-                cmd.Dispose();
-                conn.Close();
-
-                return lstStudents;
-            }
-        }
-
-        public void Insert(Student obj)
+        public async Task Insert(Student obj)
         {
             using (SqlConnection conn = new SqlConnection(GetConnStr()))
             {
@@ -191,7 +159,7 @@ namespace PraProjectBNI.Data
             }
         }
 
-        public void Update(string id, Student obj)
+        public async Task Update(string id, Student obj)
         {
             using (SqlConnection conn = new SqlConnection(GetConnStr()))
             {
@@ -266,48 +234,6 @@ namespace PraProjectBNI.Data
                     conn.Close();
                 }
             }
-        }
-
-        IEnumerable<Student> IStudent.GetByName(string Student)
-        {
-            throw new NotImplementedException();
-        }
-
-        Student IStudent.GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudent.Insert(Student student)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudent.Update(int id, Student student)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudent.Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerable<Student> IStudent.GetByName()
-        {
-            throw new NotImplementedException();
-        }
-
-        object IStudent.InsertWithIndentity(Student student)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IStudent.Update(string v, Student student) => throw new NotImplementedException();
-
-        void ICrud<Student>.Insert(string id)
-        {
-            throw new NotImplementedException();
         }
     }
 }
